@@ -94,7 +94,8 @@ namespace EXILANT.Labs.CoAP.Message
         public void SetURL(string coapURL)
         {
             if (coapURL == null || coapURL.Trim().Length == 0) throw new ArgumentNullException("Invalid CoAP URL");
-            coapURL = coapURL.Trim().ToLower();
+            coapURL = coapURL.Trim();
+
             /*
              * The URI object provided by NETMF does not work if the scheme is not http/https
              * Therefore, after checking for the scheme, we replace it with http
