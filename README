@@ -2,6 +2,7 @@ This is a modification of the CoAPSharp library http://coapsharp.com/ . It is be
 
 Modifications:
 	- Add IPv6 support
+	- Allow URLs to be case sensitive
 	
 Original Copyright:
 /******************************************************************************
