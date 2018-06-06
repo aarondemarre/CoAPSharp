@@ -59,17 +59,30 @@ namespace EXILANT.Labs.CoAP.Helpers
         /// <returns>string</returns>
         public static string GetUriHost(string uri)
         {
-            if (uri == null || uri.Trim().Length == 0) return null;
-            if (uri.IndexOf("://") < 0) return null;
-            int startIdx = uri.IndexOf("://") + 3;
-            int indexOfColon = uri.IndexOf(":", startIdx);
-            int endIdx = (indexOfColon != -1) ? indexOfColon : uri.IndexOfAny(new char[] { '/' , '\\'}, startIdx + 1);
-
+            int startIdx = -1;
+            int endIdx = -1;
             string host = "";
-            if (endIdx < 0)
+
+            // If the URI contains square brackets, it is IPv6 as per RFC3986 http://www.ietf.org/rfc/rfc3986.txt
+            if (uri.Contains("[") && uri.Contains("]"))
+            {
+                startIdx = uri.IndexOf("[") + 1;
+                endIdx = uri.IndexOf("]");
+            }
+            else
+            {
+                if (uri == null || uri.Trim().Length == 0) return null;
+                if (uri.IndexOf("://") < 0) return null;
+                startIdx = uri.IndexOf("://") + 3;
+                int indexOfColon = uri.IndexOf(":", startIdx);
+                endIdx = (indexOfColon != -1) ? indexOfColon : uri.IndexOfAny(new char[] { '/', '\\' }, startIdx + 1);
+            }
+
+            if (startIdx > 0 && endIdx < 0)
                 host = uri.Substring(startIdx);
             else
                 host = uri.Substring(startIdx, endIdx - startIdx);
+
             return host;
         }
         /// <summary>
@@ -79,9 +92,17 @@ namespace EXILANT.Labs.CoAP.Helpers
         /// <returns>int</returns>
         public static int GetUriPort(string uri)
         {
-            if (uri == null || uri.Trim().Length == 0) return 0;
-            
-            int startIdx = uri.IndexOf("://") + 3;
+            if (uri == null || uri.Trim().Length == 0)
+                return 0;
+
+            int startIdx = -1;
+
+            // If the URI contains square brackets, it is IPv6 as per RFC3986 http://www.ietf.org/rfc/rfc3986.txt
+            if (uri.Contains("[") && uri.Contains("]"))
+                startIdx = uri.IndexOf("]") + 1;
+            else
+                startIdx = uri.IndexOf("://") + 3;
+
             int idxOfColon = uri.IndexOf(":", startIdx);
             int idxOfSlash = -1;
             string port = "";
